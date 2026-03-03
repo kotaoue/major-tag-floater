@@ -34,7 +34,7 @@ jobs:
         shell: bash
         run: |
           TAG="invalid-tag"
-          MAJOR=$(echo "$TAG" | grep -oE '^v[0-9]+')
+          MAJOR=$(echo "$TAG" | grep -oE '^v[0-9]+' || true)
           if [ -n "$MAJOR" ]; then
             echo "::error::Expected empty result but got '$MAJOR'"
             exit 1

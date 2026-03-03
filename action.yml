@@ -21,7 +21,7 @@ runs:
         TAG: ${{ inputs.tag }}
       run: |
         set -e
-        MAJOR=$(echo "$TAG" | grep -oE '^v[0-9]+')
+        MAJOR=$(echo "$TAG" | grep -oE '^v[0-9]+' || true)
         if [ -z "$MAJOR" ]; then
           echo "::error::Could not extract major version from tag: $TAG"
           exit 1

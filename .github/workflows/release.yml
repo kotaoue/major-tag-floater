@@ -1,0 +1,17 @@
+name: Release
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  float-major-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Float major version tag
+        uses: ./
