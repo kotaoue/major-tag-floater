@@ -8,6 +8,10 @@ inputs:
     required: false
     default: ${{ github.event.release.tag_name }}
 
+branding:
+  icon: "tag"
+  color: "blue"
+
 runs:
   using: composite
   steps:
