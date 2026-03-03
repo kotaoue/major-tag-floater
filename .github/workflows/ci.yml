@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test valid semver tag
+        shell: bash
+        run: |
+          set -e
+          TAG="v1.2.3"
+          MAJOR=$(echo "$TAG" | grep -oE '^v[0-9]+')
+          if [ -z "$MAJOR" ]; then
+            echo "::error::Could not extract major version from tag: $TAG"
+            exit 1
+          fi
+          if [ "$MAJOR" != "v1" ]; then
+            echo "::error::Expected 'v1' but got '$MAJOR'"
+            exit 1
+          fi
+          echo "OK: $TAG -> $MAJOR"
+
+      - name: Test invalid tag returns error
+        shell: bash
+        run: |
+          TAG="invalid-tag"
+          MAJOR=$(echo "$TAG" | grep -oE '^v[0-9]+')
+          if [ -n "$MAJOR" ]; then
+            echo "::error::Expected empty result but got '$MAJOR'"
+            exit 1
+          fi
+          echo "OK: invalid tag correctly produced no major version"
