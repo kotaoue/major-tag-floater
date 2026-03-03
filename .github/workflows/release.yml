@@ -15,5 +15,3 @@ jobs:
 
       - name: Float major version tag
         uses: ./
-        with:
-          tag: ${{ github.event.release.tag_name }}
