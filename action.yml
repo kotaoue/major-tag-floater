@@ -1,0 +1,32 @@
+name: Major Tag Floater
+description: Updates the floating major version tag (e.g. v1) to point to the latest release.
+author: kotaoue
+
+inputs:
+  tag:
+    description: The full release tag (e.g. v1.2.3). Defaults to the tag from the release event.
+    required: false
+    default: ${{ github.event.release.tag_name }}
+
+runs:
+  using: composite
+  steps:
+    - name: Update major version tag
+      shell: bash
+      env:
+        TAG: ${{ inputs.tag }}
+      run: |
+        set -e
+        MAJOR=$(echo "$TAG" | grep -oE '^v[0-9]+')
+        if [ -z "$MAJOR" ]; then
+          echo "::error::Could not extract major version from tag: $TAG"
+          exit 1
+        fi
+        if ! git tag -f "$MAJOR"; then
+          echo "::error::Failed to create/update local tag '$MAJOR'. Ensure the repository is checked out."
+          exit 1
+        fi
+        if ! git push origin "$MAJOR" --force; then
+          echo "::error::Failed to push tag '$MAJOR'. Ensure the job has 'contents: write' permission."
+          exit 1
+        fi
